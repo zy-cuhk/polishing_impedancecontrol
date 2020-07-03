@@ -13,28 +13,13 @@ from std_msgs.msg import String
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 from geometry_msgs.msg import WrenchStamped,TwistStamped
-from ur5_planning.msg import uv
 from math import *
 
-o_path="/data/ros/yue_ws_201903/src/visionbased_polishing"
-sys.path.append(o_path) 
+import frompitoangle
+from trans_methods import *
+from impedance_netf_data_get import *
 
-import scripts_arm.frompitoangle
-from scripts_arm.ur5_kinematics import Kinematic
-from scripts_arm.hand_in_eye import *
-from scripts_arm.trans_methods import *
-from scripts_arm.get_arpose_from_ar import *
-from scripts_arm.ur5_pose_get import *
-from scripts_arm.uv_sub_node import *
-from scripts_arm.structure_point_xdydzd_sub import *
-from scripts_arm.structure_point_xnynan_sub import *
-from scripts_arm.impedance_netf_data_get import *
-from scripts_arm.ur_tool_velocity_sub import *
-
-"""
-withforce control,just cartesian control with trejactory palnning in retangle,and use structure line with z depth,x depth,y depth
-"""
-class VisonControl():
+class Impedancecontrol():
     def __init__(self,urdfname,ratet):
         self.urdfname=urdfname
         self.detat=0.05 #float(1.0/ratet)        
@@ -50,7 +35,7 @@ class VisonControl():
         self.robot = URDF.from_xml_file("/home/zy/catkin_ws/src/polishingrobot_yhl/polishing_undervibration/script/aubo_i5.urdf")
 
 
-    def visionbased_impedancecontroller1(self,urdfname):
+    def impedancecontroller(self):
         kdl_kin = KDLKinematics(self.robot, "base_link", "wrist3_Link")
         pose = kdl_kin.forward(self.aubo_q) 
         Jacobian = kdl_kin.jacobian(self.aubo_q)
@@ -71,6 +56,10 @@ class VisonControl():
         q_next=[]
         for i in range(len(detajoint.tolist())):
             q_next.append(detajoint.tolist()[i][0]+qnow[i])
+        
+        aubo5=Renovation_operation()
+        aubo5.aubo_motion1(aubo_q_list,rate)
+
         return q_next
 
 
@@ -81,12 +70,11 @@ def main():
     rate = rospy.Rate(ratet)                
 
     urdfname="/home/zy/catkin_ws/src/paintingrobot_related/paintingrobot_underusing/paintingrobot_description/urdf/base/paintingrobot_description.urdf.xacro"
-    visionbased_polishing=VisonControl(urdfname,ratet)
+    polishing=Impedancecontrol(urdfname,ratet)
 
     while not rospy.is_shutdown():
-    # for i in range(1,100):
         try:
-            visionbased_polishing.visionbased_impedancecontroller()
+            polishing.impedancecontroller()
             rate.sleep()
         except:
             continue
@@ -94,19 +82,6 @@ def main():
 if __name__=="__main__":
     main()
 
-    "exectuing painting operation of manipulator when climbing operation is over"
-    aubo_q_list=planning_source_dict["plane_num_"+str(plane_num_count)]["current_mobile_way_aubo_num_"+str(mobile_base_point_count)]["aubo_planning_voxel_num_"+ str(climb_base_count_num)]
-    # for i in range(len(aubo_q_list)):
-    #     list1=aubo_q_list["aubo_data_num_"+str(i)]
-    #     print(list1)
-    print("the number of aubo_q is:",len(aubo_q_list))
 
-    time1=time.time()
-    aubo5=Renovation_operation()
-    aubo5.aubo_motion1(aubo_q_list,rate)
-    # aubo5.manipulator_motion_simulation(aubo_q_list,rate)
-    time2=time.time()
-    delta_time4=time2-time1
-    self.time4_pub.publish(delta_time4)
 
 
