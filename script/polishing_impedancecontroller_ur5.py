@@ -35,10 +35,9 @@ from scripts_arm.ur_tool_velocity_sub import *
 withforce control,just cartesian control with trejactory palnning in retangle,and use structure line with z depth,x depth,y depth
 """
 class VisonControl():
-    def __init__(self,califilename,urdfname,ratet):
-        self.califilename=califilename
+    def __init__(self,urdfname,ratet):
+        
         self.urdfname=urdfname
-
         self.ace=50
         self.vel=0.1
         self.urt=0
@@ -55,13 +54,12 @@ class VisonControl():
         self.netf_sub = rospy.Subscriber("/robotiq_ft_wrench", WrenchStamped, self.netf_reader.callback)
         
     def visionbased_impedancecontroller(self):
-
         force_list = self.netf_reader.ave_netf_force_data
         netf=[force_list[0],force_list[1],force_list[2]]
         q_now = self.ur_reader.ave_ur_pose
 
-        joint_speed,vcc=self.get_joint_speed(sturucture_point_xyanow,structure_point_xyadsr, q_now, netf)
-        detaangle = self.get_deta_joint_angle(sturucture_point_xyanow, structure_point_xyadsr, q_now, netf)
+        joint_speed,vcc=self.get_joint_speed(q_now, netf)
+        detaangle = self.get_deta_joint_angle(q_now, netf)
         # print "the deta joints angle are:", detaangle
         q_pub_next = self.get_joint_angle(q_now,detaangle)
         # print "the published joints angle are:",q_pub_next
@@ -72,12 +70,9 @@ class VisonControl():
         self.ur_pub.publish(ss)                    
                     
 
-    def get_joint_speed(self,sturucture_point_xyanow,structure_point_xyadsr,q,f):
+    def get_joint_speed(self,q,f):
         Jacabian_joint,T_06=self.get_jacabian_from_joint(self.urdfname,q,0)
-        X=self.get_ur_X()
-        jac = tr2jac(X,1)
         jac_b2e=tr2jac(T_06,0)
-        inv_X_jac = jac.I
         
         lamdaf=[0.001/2,0.001/2,0.001/2]
         lamdaf_matrix=numpy.matrix([lamdaf[0],0,0,0,lamdaf[1],0,0,0,lamdaf[2]]).reshape((3,3))
@@ -87,9 +82,7 @@ class VisonControl():
         vc=lamdaf_matrix*numpy.matrix(detaf).T
         vcc=[vc.tolist()[0][0],vc.tolist()[1][0],vc.tolist()[2][0],0,0,0]
         # print "the camera velocity in camera frame is:",vcc
-
-        ee_speed_in_eeframe = np.dot(inv_X_jac, numpy.matrix(vcc).T)
-        v_list = ee_speed_in_eeframe.reshape((1, 6)).tolist()[0]
+        v_list = vcc.reshape((1, 6)).tolist()[0]
         flag_list = [1, 1, 1, 0, 0, 0]
         vdot_z = [1.0 * v_list[i] * flag_list[i] for i in range(6)]
         # print "the end effector velocity in end effector frame", vdot_z
@@ -99,8 +92,8 @@ class VisonControl():
         # print "joints speed are:",j_speed
         return j_speed,vcc
     
-    def get_deta_joint_angle(self,sturucture_point_xyanow,structure_point_xyadsr,q,f):
-        j_speed,Vcc=self.get_joint_speed(sturucture_point_xyanow,structure_point_xyadsr,q,f)
+    def get_deta_joint_angle(self,q,f):
+        j_speed,Vcc=self.get_joint_speed(q,f)
         # print("joint speed is:",j_speed)
         deta_joint_angle=float(self.detat)*numpy.array(j_speed)
         # print("deta_joint_angle is:",deta_joint_angle)
@@ -112,6 +105,7 @@ class VisonControl():
         for i in range(len(detajoint.tolist())):
             q_next.append(detajoint.tolist()[i][0]+qnow[i])
         return q_next
+
 
     def get_jacabian_from_joint(self,urdfname,jointq,flag):
         robot = URDF.from_xml_file(urdfname)
@@ -127,9 +121,8 @@ def main():
     ratet=5
     rate = rospy.Rate(ratet)                
 
-    urdfname="/data/ros/yue_ws_201903/src/visionbased_polishing/urdf/ur5.urdf"
-    filename="/data/ros/yue_ws_201903/src/tcst_pkg/yaml/cam_300_industry_20200518.yaml"
-    visionbased_polishing=VisonControl(filename,urdfname,ratet)
+    urdfname="/home/zy/catkin_ws/src/paintingrobot_related/paintingrobot_underusing/paintingrobot_description/urdf/base/paintingrobot_description.urdf.xacro"
+    visionbased_polishing=VisonControl(urdfname,ratet)
 
     while not rospy.is_shutdown():
     # for i in range(1,100):
