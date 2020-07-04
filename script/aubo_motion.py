@@ -132,6 +132,7 @@ class Renovation_operation():
                     break
             rate.sleep()
 
+
     def painting_gun_open_control(self):
         self.motion_state_current2last()
         while not rospy.is_shutdown():
@@ -238,7 +239,13 @@ class Renovation_operation():
         print("the ending motion pubstring3=%s"%pubstring3)
         self.manipulator_motion(pubstring3,rate,count)
 
-
+    def aubo_motion2(self,pubstring,rate):
+        if "movej" in pubstring:
+            self.aubo_move_joint_pub.publish(pubstring)
+        elif "movel" in pubstring:
+            self.aubo_move_line_pub.publish(pubstring)
+        elif "movet" in pubstring:
+            self.aubo_move_track_pub.publish(pubstring)
 
 
 def main():

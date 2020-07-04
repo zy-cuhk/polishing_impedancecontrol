@@ -7,7 +7,7 @@
     <node name="rq_test_sensor" pkg="robotiq_ft_sensor" type="rq_test_sensor" >
     </node>
 
-   <include file="$(find painting_robot_demo)/launch/paintingrobot_rosdriver/aubo_rosdriver.launch">
+   <include file="$(find polishing_undervibration)/launch/aubo_rosdriver.launch">
    </include>
    <include file="$(find sensor_startup)/launch/imu_bringup.launch">
    </include>
