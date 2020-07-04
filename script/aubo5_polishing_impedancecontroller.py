@@ -67,7 +67,7 @@ class Impedancecontrol():
         force_list = self.netf_reader.ave_netf_force_data
         print("the present force is:",force_list)
         f=[force_list[0],force_list[1],force_list[2]]
-        fd=[force_list[0],force_list[1],-5.0]
+        fd=[force_list[0],force_list[1],-2.5]
         detaf = [f[0]-fd[0],f[1]-fd[1],f[2]-fd[2]]
 
         vc=lamdaf_matrix*numpy.matrix(detaf).T

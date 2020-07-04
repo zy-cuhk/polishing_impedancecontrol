@@ -23,8 +23,14 @@ chmod 777 /dev/ttyUSB*
 which aims to run aubo5 arm, imu and robotiq force sensor 
 
 
-
-
+20200704 debugging log:
+1. sudo chmod 777 /dev/ttyUSB*
+2. roslaunch polishing_undervibration polishingcontrol_configuration.launch 
+3. rosrun robotiq_ft_sensor robotiq_ft_sensor
+4. take the video when polishing tool is away from the wall
+5. rosbag record -a
+6. rosrun plotjuggler PlotJuggler 
+7. 
 
 
 
