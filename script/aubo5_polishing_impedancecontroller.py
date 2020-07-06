@@ -41,6 +41,7 @@ class Impedancecontrol():
         self.aubo_move_track_pub=rospy.Publisher('/aubo_ros_script/movet', String, queue_size=1)
         self.aubo_move_joint_pub = rospy.Publisher('/aubo_ros_script/movej', String, queue_size=1)
         self.aubo_move_line_pub = rospy.Publisher('/aubo_ros_script/movel', String, queue_size=1)
+        
     def obtain_aubo_joints(self,msg):
         # self.aubo_q=[]
         # list1=msg.position
