@@ -20,7 +20,7 @@ from math import *
 import frompitoangle
 from trans_methods import *
 from impedance_netf_data_get import *
-from aubo_motion import *
+# from aubo_motion import *
 
 class Impedancecontrol():
     def __init__(self,urdfname,ratet):
@@ -30,7 +30,7 @@ class Impedancecontrol():
         self.robot = URDF.from_xml_file(urdfname)
         self.detat=float(1.0/ratet)
 
-        self.aubo5=Renovation_operation()
+        # self.aubo5=Renovation_operation()
         self.netf_reader = NetfData()
         self.netf_sub = rospy.Subscriber("/robotiq_ft_wrench", WrenchStamped, self.netf_reader.callback)
         # self.aubo_pose_sub = rospy.Subscriber('/renov_up_level/aubo_pose', Pose, self.obtain_aubo_pose)
@@ -68,7 +68,7 @@ class Impedancecontrol():
         force_list = self.netf_reader.ave_netf_force_data
         print("the present force is:",force_list)
         f=[force_list[0],force_list[1],force_list[2]]
-        fd=[force_list[0],force_list[1],-2.5]
+        fd=[force_list[0],force_list[1],-10.0]
         detaf = [f[0]-fd[0],f[1]-fd[1],f[2]-fd[2]]
 
         vc=lamdaf_matrix*numpy.matrix(detaf).T
