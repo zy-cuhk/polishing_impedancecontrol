@@ -17,9 +17,9 @@ def aubo_ros_test():
     "the joints of the points to the wall plane is joint_radian2"
     "(47.505,-95.843,46.771,-32.59,-43.42,-82.78)"
     "(57.154,-78.596,98.767,4.486,-31.256,-87.290)"
-    joint_radian2 = deg_to_rad((63.436,-86.222,81.649,-4.996,-27.570,-85.622))
+    joint_radian2 = deg_to_rad((66.857,-76.32,96.278,0.665,-24.18,-86.66))
     print("joint_radian2 is:",joint_radian2)
-    joint_radian3 = deg_to_rad((43.624,-104.872,23.913,-46.729,-47.287,-82.338))
+    joint_radian3 = deg_to_rad((49.359,-82.680,67.966,-24.38,-41.57,-83.01))
     print("joint_radian3 is:",joint_radian3)
     pub1 = rospy.Publisher('/aubo_ros_script/movej', String, queue_size=10)
     # pub2 = rospy.Publisher('/aubo_ros_script/movel', String, queue_size=10)
