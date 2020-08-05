@@ -9,7 +9,7 @@
 
    <include file="$(find polishing_undervibration)/launch/aubo_rosdriver.launch">
    </include>
-   <include file="$(find sensor_startup)/launch/imu_bringup.launch">
-   </include>
+   <!-- <include file="$(find sensor_startup)/launch/imu_bringup.launch">
+   </include> -->
 
 </launch>

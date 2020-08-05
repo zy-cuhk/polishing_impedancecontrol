@@ -30,8 +30,9 @@ which aims to run aubo5 arm, imu and robotiq force sensor
 4. take the video when polishing tool is away from the wall
 5. rosbag record -a
 6. rosrun plotjuggler PlotJuggler 
-7. 
 
+## 20200805
+the 
 
 
 
