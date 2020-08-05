@@ -32,7 +32,7 @@ which aims to run aubo5 arm, imu and robotiq force sensor
 6. rosrun plotjuggler PlotJuggler 
 
 ## 20200805
-the 
+the impedance controller has been added here
 
 
 
